@@ -192,7 +192,7 @@ public class Enemy
   public void enemyReader() {
     
     for(int i = 0; i < 42; i++){
-      for(int z = 0; z < 31; z++){
+      for(int z = 0; z < 35; z++){
         if(enemyLayout[i][z] == 's'){
           skeletonNumber++;
         }
