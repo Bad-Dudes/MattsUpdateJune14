@@ -142,7 +142,8 @@ public class Game extends JPanel
       //that means you’re at the end of the file.
       while ((line=br.readLine()) != null)
       {
-        levelInt = line.charAt(0);
+        char c = line.charAt(0);
+        levelInt = Character.getNumericValue(c);
         if(line.charAt(1) == 1){
           g1.setArmor(true);  
         }
@@ -157,6 +158,49 @@ public class Game extends JPanel
     {
       //Error message
     } 
+  }
+  
+  public void saveGame(){
+    String line;
+    
+    final int RADIX = 10;
+    char x = Character.forDigit(levelInt, RADIX);
+    System.out.println(x);
+    char y;
+    char z;
+    if(g1.getArmor()){
+      y = (char)'1'; 
+    }
+    else{
+      y = (char)'0'; 
+    }
+    if(g1.getPotion()){
+      z = (char)'1';
+    }
+    else{
+      z = (char)'0';
+    }
+    line = new StringBuilder().append(x).append(y).append(z).toString();
+    
+    try
+    {
+      //creates a new instance of the FileWriter and passes it
+      //the file you’re writing to
+      FileWriter fw = new FileWriter("save.txt");
+      //creates an instance of PrintWriter and passes it
+      //the instance of the FileWriter
+      PrintWriter pw = new PrintWriter(fw);
+      
+      //Write the text to the file
+      pw.println(line);
+      //close the file
+      pw.close();
+    }
+    catch(IOException e)
+    {
+      //some error message
+    }
+    
   }
   
   //Changes level int, changing levels
@@ -219,8 +263,6 @@ public class Game extends JPanel
     }
     
     if(levelOn){
-      
-      loadGame();
       //player movement
       g1.move();
       
@@ -277,6 +319,7 @@ public class Game extends JPanel
       if(g1.levelComplete()){
         setLevelOn(false);
         setLevelInt(levelInt+1);
+        saveGame();
         levelLoaded=false;
       }
     }

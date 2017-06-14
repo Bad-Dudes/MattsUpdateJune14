@@ -259,6 +259,14 @@ public class GraveDigger
    hasArmor = a; 
   }
   
+  public boolean getArmor(){
+  return hasArmor;  
+  }
+  
+  public boolean getPotion(){
+   return hasPotion; 
+  }
+  
   public void setPotion(boolean a){
    hasPotion = a; 
   }
