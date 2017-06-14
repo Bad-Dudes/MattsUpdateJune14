@@ -38,6 +38,7 @@ public class GraveDigger
   private int coins;
   
   
+  
   public GraveDigger(boolean hasArmor, boolean hasWand,int x, int y, int xa, int ya, Game game, Level level)
   {
     this.hasArmor = hasArmor;
