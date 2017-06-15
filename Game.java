@@ -19,12 +19,12 @@ public class Game extends JPanel
   //level
   private Level l1; 
   private boolean levelOn = false;
-  private int levelInt = 2;
+  private int levelInt = 1;
   private boolean levelLoaded = false;
   
 //gravedigger
   private GraveDigger g1;
-  
+  private int updatedCoins;
   
 //rocks
   private Rock[] rocks;
@@ -40,7 +40,7 @@ public class Game extends JPanel
     JFrame frame = new JFrame("GraveDigger");
     Game gd = new Game();
     frame.add(gd);
-    frame.setSize(1280, 960);
+    frame.setSize(1296, 998);
     
     frame.setVisible(true);
     
@@ -126,7 +126,86 @@ public class Game extends JPanel
     }
   }
   
-  //Increases level int, moving to next level
+  public void loadGame(){
+    try
+    {
+      //Create a new instance of the FileReader and pass it the
+      //file that needs to be read
+      FileReader fr = new FileReader("save.txt");
+      //Create a new instance of the BufferedReader and
+      //add the FileReader to it
+      BufferedReader br = new BufferedReader(fr);
+      //A string variable that will temporarily what you’re reading
+      String line;
+      //A dual purpose line! First it reads the next line and then
+      //it checks to see if that line was null. If it’s null, then
+      //that means you’re at the end of the file.
+      while ((line=br.readLine()) != null)
+      {
+        char c = line.charAt(0);
+        levelInt = Character.getNumericValue(c);
+        if(line.charAt(1) == 1){
+          g1.setArmor(true);  
+        }
+        if(line.charAt(2) == 1){
+          g1.setPotion(true);
+        }
+        updatedCoins=Integer.valueOf(line.substring(3));
+      }
+      //close the file when you’re done
+      br.close();
+    }
+    catch(IOException e)
+    {
+      //Error message
+    }
+  }
+  
+  public void saveGame(){
+    String line;
+    
+    final int RADIX = 10;
+    char x = Character.forDigit(levelInt, RADIX);
+    System.out.println(x);
+    char y;
+    char z;
+    if(g1.getArmor()){
+      y = (char)'1'; 
+    }
+    else{
+      y = (char)'0'; 
+    }
+    if(g1.getPotion()){
+      z = (char)'1';
+    }
+    else{
+      z = (char)'0';
+    }
+    
+    line = new StringBuilder().append(x).append(y).append(z).toString();
+    line = line + updatedCoins;
+    
+    try
+    {
+      //creates a new instance of the FileWriter and passes it
+      //the file you’re writing to
+      FileWriter fw = new FileWriter("save.txt");
+      //creates an instance of PrintWriter and passes it
+      //the instance of the FileWriter
+      PrintWriter pw = new PrintWriter(fw);
+      
+      //Write the text to the file
+      pw.println(line);
+      //close the file
+      pw.close();
+    }
+    catch(IOException e)
+    {
+      //some error message
+    }
+  }
+  
+  //Changes level int, changing levels
   public void setLevelInt(int a){
     levelInt = a;
   }
@@ -148,6 +227,7 @@ public class Game extends JPanel
     return levelOn; 
   }
   
+  
   @Override
   public void paint(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
@@ -160,9 +240,6 @@ public class Game extends JPanel
     if(levelOn)
     {
       g1.paint(g2d);
-      
-      
-      
       
       for(Skeleton a:e.getSList())
         a.paint(g2d);
@@ -179,6 +256,8 @@ public class Game extends JPanel
     }
   }
   
+  
+  
   public void move(){
     
     if(!levelLoaded){
@@ -186,7 +265,6 @@ public class Game extends JPanel
     }
     
     if(levelOn){
-      
       //player movement
       g1.move();
       
@@ -243,6 +321,7 @@ public class Game extends JPanel
       if(g1.levelComplete()){
         setLevelOn(false);
         setLevelInt(levelInt+1);
+        saveGame();
         levelLoaded=false;
       }
     }
